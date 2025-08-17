@@ -850,7 +850,7 @@ namespace ns_mi {
    using t_primary_index = T_Index<P_Map, 0, P_Tag, true>;
 
    template<template<class...> class P_Map, auto I_Proj, class P_Tag = void>
-   using t_pair_index = T_Index<P_Map, I_Proj, P_Tag, false>;
+   using t_secondary_index = T_Index<P_Map, I_Proj, P_Tag, false>;
 
    //###############################################################################################################################################
    // Iterator helpers

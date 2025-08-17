@@ -2000,6 +2000,7 @@ void test_move_only_copy_only_types() {
    mc.emplace(1, "first");
    mc.emplace(2, "second");
    CHECK(mc.size() == 2);
+   //mc.modify(mc.find(1), [](MoveOnlyPayload& p) { p.data = std::make_unique<std::string>("modified"); }); // Not allowed for move-only types!
 
    // Can't copy construct
    // MoveOnlyContainer mc2{mc}; // Should not compile
