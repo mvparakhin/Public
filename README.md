@@ -144,16 +144,6 @@ using C2 = ns_mi::T_MultiIndex<
 
 Policies determine how the container manages the relationship between primary storage and secondary indices, particularly when the primary storage relocates elements (e.g., vector-based maps).
 
-```mermaid
-flowchart LR
-  A[Select Policy] --> B{Does Primary Relocate Elements?};
-  B -- No (e.g., std::map) --> P1(<b>S_NoInv</b><br/><i>Fastest, simplest.<br/>Secondaries store T_Handle.</i>);
-  B -- Yes (e.g., flat_map) --> C{How to maintain stability?};
-  C --> P2(<b>S_UpdatePointerPolicy</b><br/><i>Patch secondary handles on move.<br/>Cost: O(N_affected).</i>);
-  C --> P3(<b>S_TranslationArrayPolicy</b><br/><i>Secondaries store ordinals.<br/>Cost: O(1) move, extra indirection on access.</i>);
-  P1 -. Alternative .-> P4(<b>S_KeyLookupPolicy</b><br/><i>Secondaries store primary keys.<br/>Requires unique primary.</i>);
-```
-
 ### Policy Cheat Sheet
 
 | Policy | Primary Relocates? | Secondaries Store | Relocation Cost | Notes |
