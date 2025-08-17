@@ -18,7 +18,7 @@
 namespace ns_mi {
    /*
    ========================================================================================================================
-   mi::multi_index — Design notes and architecture
+   mi::T_MultiIndex — Design notes and architecture
    ========================================================================================================================
    
    Goals
@@ -503,16 +503,16 @@ namespace ns_mi {
 
    //###############################################################################################################################################
    // Relocation policies
-   /*
-    * POLICY ARCHITECTURE OVERVIEW:
-    * Policies use CRTP to inject behavior into T_MultiIndex. Each policy defines:
-    * 1. How secondary indices reference primary nodes (handle/key/ordinal)
-    * 2. How to maintain coherence when primary storage relocates elements
-    * 3. Whether to use tombstones for lazy deletion
-    * 
-    * The four boolean traits create 16 possible combinations, though only a few make sense.
-    * Built-in policies cover the common, performant patterns.
-    */
+   //
+   // POLICY ARCHITECTURE OVERVIEW:
+   // Policies use CRTP to inject behavior into T_MultiIndex. Each policy defines:
+   // 1. How secondary indices reference primary nodes (handle/key/ordinal)
+   // 2. How to maintain coherence when primary storage relocates elements
+   // 3. Whether to use tombstones for lazy deletion
+   // 
+   // The four boolean traits create 16 possible combinations, though only a few make sense.
+   // Built-in policies cover the common, performant patterns.
+   //
    //###############################################################################################################################################
    template<bool I_Invalidates, bool I_NeedsTransl, bool I_StoresHandle, bool I_UsesTombstones>
    struct T_PolicyBase {
@@ -1164,21 +1164,21 @@ namespace ns_mi {
 
    //###############################################################################################################################################
    // T_MultiIndex
-   /*
-    * MAIN CLASS IMPLEMENTATION
-    * 
-    * Complexity guarantees (typical/amortized):
-    * - emplace: O(log N) or O(1) primary + O(#indices) secondaries
-    * - modify/replace: O(#indices) for drop+rebuild
-    * - erase: O(#indices) for secondary removal
-    * - find: O(log N) or O(1) depending on map type
-    * - Relocation cost varies by policy (see policy comments)
-    * 
-    * Memory layout optimizations:
-    * - Empty Base Optimization for unused metadata
-    * - Conditional inclusion of live counter, owner pointer, dead flag
-    * - Translation array uses rebound allocator when available
-    */
+   //
+   // MAIN CLASS IMPLEMENTATION
+   // 
+   // Complexity guarantees (typical/amortized):
+   // - emplace: O(log N) or O(1) primary + O(#indices) secondaries
+   // - modify/replace: O(#indices) for drop+rebuild
+   // - erase: O(#indices) for secondary removal
+   // - find: O(log N) or O(1) depending on map type
+   // - Relocation cost varies by policy (see policy comments)
+   // 
+   // Memory layout optimizations:
+   // - Empty Base Optimization for unused metadata
+   // - Conditional inclusion of live counter, owner pointer, dead flag
+   // - Translation array uses rebound allocator when available
+   //
    //###############################################################################################################################################
    template<class P_Key, class P_Payload, bool I_PerThreadErr, template<class> class P_Policy, class... P_Specs>
    class T_MultiIndex : private T_LiveCounterBase<P_Policy<T_MultiIndex<P_Key, P_Payload, I_PerThreadErr, P_Policy, P_Specs...>>::c_uses_tombstones, I_PerThreadErr>,
